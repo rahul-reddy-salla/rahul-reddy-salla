@@ -183,9 +183,11 @@ The agent connects to an email server (or uses demo data) and retrieves unread e
 
 ### 2. Access Request Detection
 Using Langchain and LLMs, the agent analyzes email content to detect access requests. It extracts:
-- Requester name/email
-- Resource being requested
-- Type of access needed
+- Requester name/email (who is making the request)
+- **User ID** (the specific user/account that needs the access)
+- Resource being requested (database, AWS, GitHub, etc.)
+- Type of access needed (read, write, admin)
+- **Specific permissions** (e.g., database SELECT, s3:PutObject, repo:write)
 - Justification
 - Urgency level
 
@@ -258,9 +260,12 @@ class CustomMCPManager(MCPAccessManager):
 🔔 NEW ACCESS REQUEST REQUIRES APPROVAL
 ================================================================================
 Request ID: a7b2c9d1
-Requester: john.doe@company.com
+Requested By: john.doe@company.com
+User ID (who needs access): john.doe@company.com
 Resource: Production Database
 Access Type: read
+Specific Permissions: SELECT on customer_support schema
+Urgency: high
 Urgency: high
 
 Justification:

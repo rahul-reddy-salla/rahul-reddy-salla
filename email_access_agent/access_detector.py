@@ -6,7 +6,10 @@ Uses Langchain to detect and parse access requests from email content
 from typing import Dict, Optional, List
 from langchain_core.prompts import ChatPromptTemplate
 from langchain_core.output_parsers import JsonOutputParser
-from langchain_core.pydantic_v1 import BaseModel, Field
+try:
+    from langchain_core.pydantic_v1 import BaseModel, Field
+except ImportError:
+    from pydantic import BaseModel, Field
 import logging
 
 logger = logging.getLogger(__name__)
@@ -16,8 +19,10 @@ class AccessRequest(BaseModel):
     """Structured access request"""
     is_access_request: bool = Field(description="Whether this email contains an access request")
     requester: str = Field(description="Name or email of the person requesting access")
+    user_id: str = Field(description="The user ID, username, or email address that needs the access (who will receive the access)")
     resource: str = Field(description="The resource or system access is requested for")
     access_type: str = Field(description="Type of access requested (e.g., read, write, admin)")
+    specific_permissions: str = Field(description="Specific permissions or actions requested (e.g., SELECT on database, s3:PutObject, repo:write)")
     justification: str = Field(description="Reason or justification for the access request")
     urgency: str = Field(description="Urgency level: low, medium, or high")
 
@@ -48,6 +53,14 @@ An access request is any email where someone is asking for:
 - Role changes or privilege escalations
 
 Analyze the email and extract structured information about the access request.
+Pay special attention to:
+1. The USER ID or username that needs the access (this could be the requester themselves or someone else)
+2. The specific RESOURCE or system being requested
+3. The TYPE OF ACCESS needed (read, write, admin, etc.)
+4. The SPECIFIC PERMISSIONS or actions required (e.g., database SELECT/INSERT, S3 read/write, GitHub repo permissions)
+
+If the email doesn't specify a user ID explicitly, extract it from the sender's email address.
+If specific permissions aren't mentioned, infer them from the access type and context.
 If this is not an access request, set is_access_request to false.
 
 {format_instructions}"""),
@@ -57,7 +70,7 @@ From: {from_address}
 Email Body:
 {body}
 
-Analyze this email and determine if it contains an access request.""")
+Analyze this email and determine if it contains an access request. Extract the user ID who needs access and the specific access/permissions required.""")
         ])
         
         self.chain = self.prompt | self.llm | self.parser
@@ -87,7 +100,7 @@ Analyze this email and determine if it contains an access request.""")
                 access_request = result
             
             if access_request.is_access_request:
-                logger.info(f"Access request detected from {access_request.requester} for {access_request.resource}")
+                logger.info(f"Access request detected: User '{access_request.user_id}' needs '{access_request.access_type}' access to '{access_request.resource}' (requested by {access_request.requester})")
                 return access_request
             else:
                 logger.debug("No access request detected in email")

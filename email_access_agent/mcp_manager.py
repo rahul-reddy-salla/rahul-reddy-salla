@@ -106,9 +106,11 @@ class MCPAccessManager:
             Dictionary of tool arguments
         """
         return {
-            "user": access_request.requester,
+            "user_id": access_request.user_id,
+            "requester": access_request.requester,
             "resource": access_request.resource,
             "access_type": access_request.access_type,
+            "specific_permissions": access_request.specific_permissions,
             "justification": access_request.justification,
             "approved_by": approval_data.get("approver", "unknown"),
             "approval_comments": approval_data.get("comments", ""),
@@ -146,12 +148,14 @@ class MCPAccessManager:
                 "success": True,
                 "tool_name": tool_name,
                 "arguments": tool_args,
-                "message": f"Successfully provisioned {tool_args['access_type']} access to {tool_args['resource']} for {tool_args['user']}",
+                "message": f"Successfully provisioned {tool_args['access_type']} access to {tool_args['resource']} for user {tool_args['user_id']}",
                 "simulation": True,
                 "access_details": {
-                    "user": tool_args["user"],
+                    "user_id": tool_args["user_id"],
+                    "requester": tool_args["requester"],
                     "resource": tool_args["resource"],
                     "permissions": [tool_args["access_type"]],
+                    "specific_permissions": tool_args["specific_permissions"],
                     "granted_by": tool_args["approved_by"]
                 }
             }

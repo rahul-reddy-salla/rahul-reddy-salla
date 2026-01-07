@@ -61,8 +61,10 @@ class ApprovalRequest:
         return {
             "request_id": self.request_id,
             "requester": self.access_request.requester,
+            "user_id": self.access_request.user_id,
             "resource": self.access_request.resource,
             "access_type": self.access_request.access_type,
+            "specific_permissions": self.access_request.specific_permissions,
             "justification": self.access_request.justification,
             "urgency": self.access_request.urgency,
             "status": self.status.value,
@@ -190,9 +192,11 @@ class ApprovalManager:
         print("🔔 NEW ACCESS REQUEST REQUIRES APPROVAL")
         print("="*80)
         print(f"Request ID: {approval_req.request_id}")
-        print(f"Requester: {approval_req.access_request.requester}")
+        print(f"Requested By: {approval_req.access_request.requester}")
+        print(f"User ID (who needs access): {approval_req.access_request.user_id}")
         print(f"Resource: {approval_req.access_request.resource}")
         print(f"Access Type: {approval_req.access_request.access_type}")
+        print(f"Specific Permissions: {approval_req.access_request.specific_permissions}")
         print(f"Urgency: {approval_req.access_request.urgency}")
         print(f"\nJustification:")
         print(f"  {approval_req.access_request.justification}")

@@ -79,8 +79,10 @@ def main():
                 for req in pending:
                     print(f"\n  ID: {req['request_id']}")
                     print(f"  Requester: {req['requester']}")
+                    print(f"  User ID (who needs access): {req['user_id']}")
                     print(f"  Resource: {req['resource']}")
                     print(f"  Access Type: {req['access_type']}")
+                    print(f"  Specific Permissions: {req['specific_permissions']}")
                     print(f"  Urgency: {req['urgency']}")
                     
         elif choice == "3":
@@ -113,8 +115,10 @@ def main():
             else:
                 for i, entry in enumerate(history, 1):
                     print(f"\n  #{i}: {entry['status'].upper()}")
-                    print(f"    User: {entry['tool_args']['user']}")
+                    print(f"    User ID: {entry['tool_args']['user_id']}")
+                    print(f"    Requested By: {entry['tool_args']['requester']}")
                     print(f"    Resource: {entry['tool_args']['resource']}")
+                    print(f"    Specific Permissions: {entry['tool_args']['specific_permissions']}")
                     
         elif choice == "6":
             print("\n👋 Goodbye!")

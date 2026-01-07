@@ -94,8 +94,10 @@ def main():
         print(f"\nRequest #{i}:")
         print(f"  ID: {req['request_id']}")
         print(f"  Requester: {req['requester']}")
+        print(f"  User ID (who needs access): {req['user_id']}")
         print(f"  Resource: {req['resource']}")
         print(f"  Access Type: {req['access_type']}")
+        print(f"  Specific Permissions: {req['specific_permissions']}")
         print(f"  Urgency: {req['urgency']}")
     
     # Interactive approval (demo)
@@ -133,9 +135,11 @@ def main():
                 if "access_details" in prov_result:
                     details = prov_result["access_details"]
                     print(f"\nAccess Details:")
-                    print(f"  User: {details.get('user')}")
+                    print(f"  User ID: {details.get('user_id')}")
+                    print(f"  Requested By: {details.get('requester')}")
                     print(f"  Resource: {details.get('resource')}")
                     print(f"  Permissions: {', '.join(details.get('permissions', []))}")
+                    print(f"  Specific Permissions: {details.get('specific_permissions')}")
                     print(f"  Granted By: {details.get('granted_by')}")
             else:
                 print(f"❌ Provisioning failed: {prov_result.get('error')}")
@@ -152,8 +156,10 @@ def main():
             print(f"\nProvisioning #{i}:")
             print(f"  Status: {entry['status']}")
             print(f"  Tool: {entry['tool_name']}")
-            print(f"  User: {entry['tool_args']['user']}")
+            print(f"  User ID: {entry['tool_args']['user_id']}")
+            print(f"  Requested By: {entry['tool_args']['requester']}")
             print(f"  Resource: {entry['tool_args']['resource']}")
+            print(f"  Specific Permissions: {entry['tool_args']['specific_permissions']}")
     else:
         print("No provisioning history yet.")
     
