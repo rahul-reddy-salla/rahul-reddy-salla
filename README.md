@@ -266,7 +266,6 @@ Resource: Production Database
 Access Type: read
 Specific Permissions: SELECT on customer_support schema
 Urgency: high
-Urgency: high
 
 Justification:
   I need read access to the production database for the customer support 
